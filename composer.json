@@ -27,7 +27,7 @@
   "require-dev": {},
   "autoload": {
     "psr-0": {
-      "Corley": "src"
+      "Tmf": "src"
     }
   }
 }

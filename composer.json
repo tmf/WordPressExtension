@@ -1,28 +1,36 @@
 {
-    "name": "wdalmut/wordpress-extension",
-    "type": "library",
-    "description": "WordPress extension for Behat",
-    "keywords": [
-        "behat",
-        "wordpress",
-        "story",
-        "bdd"
-    ],
-    "license": "MIT",
-    "require": {
-        "behat/behat": "2.5.*@stable",
-        "behat/mink-extension": "*"
+  "name": "tmf/wordpress-extension",
+  "type": "library",
+  "description": "WordPress extension for Behat 3",
+  "authors": [
+    {
+      "name": "wdalmut",
+      "homepage": "https://github.com/wdalmut"
     },
-    "require-dev": {
-        "phpunit/phpunit": "3.7.*",
-        "behat/mink-goutte-driver": "*"
-    },
-    "config": {
-        "bin-dir": "bin"
-    },
-    "autoload": {
-        "psr-0": {
-            "Corley": "src"
-        }
+    {
+      "name": "tmf",
+      "email": "tom.forrer@gmail.com"
     }
+  ],
+  "keywords": [
+    "behat",
+    "wordpress",
+    "story",
+    "bdd"
+  ],
+  "license": "MIT",
+  "require": {
+    "behat/behat": "~3.0,>=3.0.4",
+    "behat/mink-extension": "~2.0@dev",
+    "symfony/filesystem": "~2.3",
+    "symfony/finder": "~2.3",
+    "phpunit/phpunit": "~4.0"
+  },
+  "require-dev": {},
+  "autoload": {
+    "psr-4": {
+      "Tmf\\WordPressExtension\\": "src"
+    },
+    "files": [ "../../phpunit/phpunit/src/Framework/Assert/Functions.php" ]
+  }
 }

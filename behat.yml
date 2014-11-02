@@ -4,13 +4,13 @@ default:
   suites:
     default:
       contexts:
-        - Tmf\PluginExample\Features\Context\PluginFeatureContext
+        - Tmf\WordPressExtension\Context\WordPressContext
   extensions:
     Tmf\WordPressExtension:
       path: '%paths.base/vendor/wordpress'
 
     Behat\MinkExtension:
-      base_url:    'http://127.0.0.1'
+      base_url:    'http://localhost:8000'
       sessions:
         default:
           goutte: ~

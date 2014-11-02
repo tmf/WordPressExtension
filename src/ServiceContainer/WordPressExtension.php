@@ -50,7 +50,7 @@ class WordPressExtension implements ExtensionInterface
                 ->scalarNode('path')
                     ->defaultValue(__DIR__ . 'vendor')
                 ->end()
-                ->scalarNode('link_path')
+                ->scalarNode('symlink_base_to_path')
                     ->defaultValue('')
                 ->end()
                 ->arrayNode('connection')
@@ -87,6 +87,7 @@ class WordPressExtension implements ExtensionInterface
         $definition = new Definition('Tmf\WordPressExtension\Context\Initializer\WordPressContextInitializer', array(
             '%wordpress.parameters%',
             '%mink.parameters%',
+            '%paths.base%',
         ));
         $definition->addTag(ContextExtension::INITIALIZER_TAG, array('priority' => 0));
         $container->setDefinition('behat.wordpress.service.wordpress_context_initializer', $definition);

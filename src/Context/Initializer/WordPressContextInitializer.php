@@ -19,17 +19,20 @@ class WordPressContextInitializer implements ContextInitializer
 {
     private $wordpressParams;
     private $minkParams;
+    private $basePath;
 
     /**
      * inject the wordpress extension parameters and the mink parameters
      *
-     * @param array $wordpressParams
-     * @param array $minkParams
+     * @param array  $wordpressParams
+     * @param array  $minkParams
+     * @param string $basePath
      */
-    public function __construct($wordpressParams, $minkParams)
+    public function __construct($wordpressParams, $minkParams, $basePath)
     {
         $this->wordpressParams = $wordpressParams;
         $this->minkParams = $minkParams;
+        $this->basePath = $basePath;
     }
 
     /**
@@ -103,6 +106,10 @@ class WordPressContextInitializer implements ContextInitializer
                     sprintf("'DB_PASSWORD', '%s'", $this->wordpressParams['connection']['password']),
                 ), $file->getContents());
             $fs->dumpFile($file->getPath() . '/wp-config.php', $configContent);
+        }
+
+        if ($this->wordpressParams['symlink_base_to_path']) {
+            $fs->symlink($this->basePath, $this->wordpressParams['symlink_base_to_path']);
         }
     }
 }

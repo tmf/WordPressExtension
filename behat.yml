@@ -1,10 +1,16 @@
-# behat.yml
 default:
-    extensions:
-        Behat\MinkExtension\Extension:
-            base_url:    'http://wp.127.0.0.1.xip.io'
-            goutte:      ~
-            show_cmd: "firefox %s"
-        Corley\WordPressExtension\Extension:
-            path: "../wordpress"
+  autoload:
+    - %paths.base%/Features/Context
+  suites:
+    default:
+      contexts:
+        - Tmf\PluginExample\Features\Context\PluginFeatureContext
+  extensions:
+    Tmf\WordPressExtension:
+      path: '%paths.base/vendor/wordpress'
 
+    Behat\MinkExtension:
+      base_url:    'http://127.0.0.1'
+      sessions:
+        default:
+          goutte: ~

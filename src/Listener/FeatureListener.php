@@ -1,37 +1,47 @@
 <?php
-/**
- * @license MIT
- */
 
-namespace Corley\WordPressExtension\EventListener;
+namespace Tmf\WordPressExtension\Listener;
 
-use Behat\Behat\Event\FeatureEvent;
-use Behat\Behat\Event\OutlineExampleEvent;
-use Behat\Behat\Event\ScenarioEvent;
-use Behat\Behat\Event\SuiteEvent;
+use Behat\Behat\EventDispatcher\Event\BeforeFeatureTested;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Behat\Behat\EventDispatcher\Event\FeatureTested;
 
-class HookListener implements EventSubscriberInterface
+/**
+ * Class FeatureListener
+ *
+ * @package Tmf\WordPressExtension\Listener
+ */
+class FeatureListener implements  EventSubscriberInterface
 {
     private $path;
     private $minkParams;
 
+    /**
+     * @param $path
+     * @param $minkParams
+     */
     public function __construct($path, $minkParams)
     {
         $this->path = $path;
         $this->minkParams = $minkParams;
     }
 
+    /**
+     * @return array
+     */
     public static function getSubscribedEvents()
     {
         $events = array(
-            'beforeSuite',
+          FeatureTested::BEFORE => array('beforeFeatureTested'),
         );
 
         return array_combine($events, $events);
     }
 
-    public function beforeSuite(SuiteEvent $event)
+    /**
+     * @param BeforeFeatureTested $event
+     */
+    public function beforeFeature(BeforeFeatureTested $event)
     {
         $url = parse_url($this->minkParams["base_url"]);
 

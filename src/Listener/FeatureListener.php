@@ -31,11 +31,9 @@ class FeatureListener implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        $events = array(
+        return array(
             FeatureTested::BEFORE => array('beforeFeatureTested'),
         );
-
-        return array_combine($events, $events);
     }
 
     /**

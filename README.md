@@ -1,6 +1,6 @@
-# WordPress Extension for Behat
+# WordPress Extension for Behat 3
 
-Just a WordPress extension for Behat
+Just a WordPress extension for Behat 3
 
 ## Install
 
@@ -9,7 +9,7 @@ Prepare your composer
 ```json
 {
     "require": {
-        "wdalmut/wordpress-extension": "*"
+        "tmf/wordpress-extension": "dev-behat3"
     }
 }
 ```
@@ -19,31 +19,22 @@ Prepare your composer
 ```yml
 # behat.yml
 default:
-    extensions:
-        Behat\MinkExtension\Extension:
-            base_url:    'http://wp.127.0.0.1.xip.io'
-            goutte:      ~
-            show_cmd: "firefox %s"
-        Corley\WordPressExtension\Extension:
-            path: "../wordpress"
+  autoload:
+    - %paths.base%/Features/Context
+  suites:
+    default:
+      contexts:
+        - Tmf\WordPressExtension\Context\WordPressContext
+  extensions:
+    Tmf\WordPressExtension:
+      path: '%paths.base/vendor/wordpress'
 
-```
+    Behat\MinkExtension:
+      base_url:    'http://localhost:8000'
+      sessions:
+        default:
+          goutte: ~
 
-## Add a base WordPress context
-
-Just add the WordPress context
-
-```php
-use Corley\WordPressExtension\Context\WordPressContext;
-
-class FeatureContext extends BehatContext
-{
-    public function __construct(array $parameters)
-    {
-        //...
-        $this->useContext('wordpress', new WordPressContext);
-    }
-}
 ```
 
 ## Tips

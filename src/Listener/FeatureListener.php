@@ -13,16 +13,16 @@ use Behat\Behat\EventDispatcher\Event\FeatureTested;
  */
 class FeatureListener implements EventSubscriberInterface
 {
-    private $path;
+    private $wordpressParams;
     private $minkParams;
 
     /**
-     * @param $path
+     * @param $wordpressParams
      * @param $minkParams
      */
-    public function __construct($path, $minkParams)
+    public function __construct($wordpressParams, $minkParams)
     {
-        $this->path = $path;
+        $this->wordpressParams = $wordpressParams;
         $this->minkParams = $minkParams;
     }
 
@@ -41,13 +41,13 @@ class FeatureListener implements EventSubscriberInterface
      */
     public function beforeFeatureTested(BeforeFeatureTested $event)
     {
-        $url = parse_url($this->minkParams["base_url"]);
+        $url = parse_url($this->minkParams['base_url']);
 
         $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
         $_SERVER['HTTP_HOST'] = $url["host"];
         $PHP_SELF = $GLOBALS['PHP_SELF'] = $_SERVER['PHP_SELF'] = '/index.php';
 
         define('WP_INSTALLING', true);
-        require_once $this->path . '/wp-config.php';
+        require_once $this->wordpressParams['path'] . '/wp-config.php';
     }
 }

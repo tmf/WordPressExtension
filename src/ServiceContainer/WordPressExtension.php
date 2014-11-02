@@ -4,7 +4,8 @@ namespace Tmf\WordPressExtension\ServiceContainer;
 
 use Behat\Behat\Context\ServiceContainer\ContextExtension,
     Behat\Testwork\ServiceContainer\Extension as ExtensionInterface,
-    Behat\Testwork\ServiceContainer\ExtensionManager;
+    Behat\Testwork\ServiceContainer\ExtensionManager,
+    Behat\Testwork\EventDispatcher\ServiceContainer\EventDispatcherExtension;
 
 use Symfony\Component\Config\FileLocator,
     Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition,
@@ -71,7 +72,7 @@ class WordPressExtension implements ExtensionInterface
             '%wordpress.parameters%',
             '%mink.parameters%',
         ));
-        $definition->addTag(ContextExtension::INITIALIZER_TAG, array('priority' => 0));
+        $definition->addTag(EventDispatcherExtension::SUBSCRIBER_TAG, array('priority' => 0));
         $container->setDefinition('behat.wordpress.service.feature_listener', $definition);
     }
 }

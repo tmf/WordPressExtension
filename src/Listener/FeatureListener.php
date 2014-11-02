@@ -11,7 +11,7 @@ use Behat\Behat\EventDispatcher\Event\FeatureTested;
  *
  * @package Tmf\WordPressExtension\Listener
  */
-class FeatureListener implements  EventSubscriberInterface
+class FeatureListener implements EventSubscriberInterface
 {
     private $path;
     private $minkParams;
@@ -32,7 +32,7 @@ class FeatureListener implements  EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         $events = array(
-          FeatureTested::BEFORE => array('beforeFeatureTested'),
+            FeatureTested::BEFORE => array('beforeFeatureTested'),
         );
 
         return array_combine($events, $events);
@@ -41,7 +41,7 @@ class FeatureListener implements  EventSubscriberInterface
     /**
      * @param BeforeFeatureTested $event
      */
-    public function beforeFeature(BeforeFeatureTested $event)
+    public function beforeFeatureTested(BeforeFeatureTested $event)
     {
         $url = parse_url($this->minkParams["base_url"]);
 
@@ -49,7 +49,7 @@ class FeatureListener implements  EventSubscriberInterface
         $_SERVER['HTTP_HOST'] = $url["host"];
         $PHP_SELF = $GLOBALS['PHP_SELF'] = $_SERVER['PHP_SELF'] = '/index.php';
 
-        define( 'WP_INSTALLING', true );
+        define('WP_INSTALLING', true);
         require_once $this->path . '/wp-config.php';
     }
 }

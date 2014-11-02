@@ -8,8 +8,8 @@ Prepare your composer
 
 ```json
 {
-    "require": {
-        "tmf/wordpress-extension": "dev-behat3"
+    "require-dev": {
+        "tmf/wordpress-extension": "dev-master"
     }
 }
 ```

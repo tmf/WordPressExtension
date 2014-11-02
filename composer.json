@@ -26,8 +26,8 @@
   },
   "require-dev": {},
   "autoload": {
-    "psr-0": {
-      "Tmf": "src"
+    "psr-4": {
+      "Tmf\\WordPressExtension\\": "src"
     }
   }
 }

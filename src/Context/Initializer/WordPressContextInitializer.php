@@ -53,7 +53,8 @@ class WordPressContextInitializer implements ContextInitializer
     private function prepareEnvironment()
     {
         // wordpress uses these superglobal fields everywhere...
-        $_SERVER['HTTP_HOST'] = parse_url($this->minkParams['base_url'], PHP_URL_HOST);
+        $urlComponents = parse_url($this->minkParams['base_url']);
+        $_SERVER['HTTP_HOST'] = $urlComponents['host'] . (isset($urlComponents['port']) ? ':' . $urlComponents['port'] : '');
         $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
 
 

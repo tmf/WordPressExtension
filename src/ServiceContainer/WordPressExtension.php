@@ -47,9 +47,25 @@ class WordPressExtension implements ExtensionInterface
         $builder
             ->addDefaultsIfNotSet()
             ->children()
-            ->scalarNode('path')
-            ->defaultValue(__DIR__)
-            ->end()
+                ->scalarNode('path')
+                    ->defaultValue(__DIR__ . 'vendor')
+                ->end()
+                ->scalarNode('link_path')
+                    ->defaultValue('')
+                ->end()
+                ->arrayNode('connection')
+                    ->children()
+                        ->scalarNode('db')
+                            ->defaultValue('wordpress')
+                        ->end()
+                        ->scalarNode('username')
+                            ->defaultValue('root')
+                        ->end()
+                        ->scalarNode('password')
+                            ->defaultValue('')
+                        ->end()
+                    ->end()
+                ->end()
             ->end();
     }
 
@@ -59,20 +75,20 @@ class WordPressExtension implements ExtensionInterface
      */
     public function load(ContainerBuilder $container, array $config)
     {
-        $this->loadSuiteListener($container);
+        $this->loadContextInitializer($container);
         $container->setParameter('wordpress.parameters', $config);
     }
 
     /**
      * @param ContainerBuilder $container
      */
-    private function loadSuiteListener(ContainerBuilder $container)
+    private function loadContextInitializer(ContainerBuilder $container)
     {
-        $definition = new Definition('Tmf\WordPressExtension\Listener\FeatureListener', array(
+        $definition = new Definition('Tmf\WordPressExtension\Context\Initializer\WordPressContextInitializer', array(
             '%wordpress.parameters%',
             '%mink.parameters%',
         ));
-        $definition->addTag(EventDispatcherExtension::SUBSCRIBER_TAG, array('priority' => 0));
-        $container->setDefinition('behat.wordpress.service.feature_listener', $definition);
+        $definition->addTag(ContextExtension::INITIALIZER_TAG, array('priority' => 0));
+        $container->setDefinition('behat.wordpress.service.wordpress_context_initializer', $definition);
     }
 }

@@ -31,6 +31,6 @@
     "psr-4": {
       "Tmf\\WordPressExtension\\": "src"
     },
-    "files": [ "../../vendor/phpunit/phpunit/src/Framework/Assert/Functions.php" ]
+    "files": [ "../../phpunit/phpunit/src/Framework/Assert/Functions.php" ]
   }
 }

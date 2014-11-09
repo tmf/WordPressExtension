@@ -13,6 +13,11 @@ use Symfony\Component\Config\FileLocator,
     Symfony\Component\DependencyInjection\Loader\XmlFileLoader,
     Symfony\Component\DependencyInjection\Definition;
 
+/**
+ * Class WordPressExtension
+ *
+ * @package Tmf\WordPressExtension\ServiceContainer
+ */
 class WordPressExtension implements ExtensionInterface
 {
 
@@ -39,9 +44,9 @@ class WordPressExtension implements ExtensionInterface
 
     }
 
-    /**
-     * @param ArrayNodeDefinition $builder
-     */
+  /**
+   * {@inheritdoc}
+   */
     public function configure(ArrayNodeDefinition $builder)
     {
         $builder
@@ -52,6 +57,9 @@ class WordPressExtension implements ExtensionInterface
                 ->end()
                 ->scalarNode('symlink_base_to_path')
                     ->defaultValue('')
+                ->end()
+                ->booleanNode('flush_database')
+                    ->defaultValue(true)
                 ->end()
                 ->arrayNode('connection')
                     ->children()
@@ -70,8 +78,7 @@ class WordPressExtension implements ExtensionInterface
     }
 
     /**
-     * @param ContainerBuilder $container
-     * @param array            $config
+     * {@inheritdoc}
      */
     public function load(ContainerBuilder $container, array $config)
     {
@@ -80,7 +87,9 @@ class WordPressExtension implements ExtensionInterface
     }
 
     /**
-     * @param ContainerBuilder $container
+     * Register a Context Initializer service for the behat
+     *
+     * @param ContainerBuilder $container the service will check for Tmf\WordPressExtension\Context\WordPressContext contexts
      */
     private function loadContextInitializer(ContainerBuilder $container)
     {

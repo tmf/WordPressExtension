@@ -47,6 +47,7 @@ class WordPressContextInitializer implements ContextInitializer
         }
         $this->prepareEnvironment();
         $this->installFileFixtures();
+        $this->flushDatabase();
         $this->loadStack();
     }
 
@@ -110,6 +111,24 @@ class WordPressContextInitializer implements ContextInitializer
 
         if ($this->wordpressParams['symlink_base_to_path']) {
             $fs->symlink($this->basePath, $this->wordpressParams['symlink_base_to_path']);
+        }
+    }
+
+    /**
+     * flush the database if specified by flush_database parameter
+     */
+    public function flushDatabase()
+    {
+        if ($this->wordpressParams['flush_database']) {
+            $connection = $this->wordpressParams['connection'];
+            $mysqli = new \Mysqli(
+                'localhost',
+                $connection['username'],
+                $connection['password'],
+                $connection['db']
+            );
+
+            $result = $mysqli->multi_query("DROP DATABASE IF EXISTS ${connection['db']}; CREATE DATABASE ${connection['db']};");
         }
     }
 }

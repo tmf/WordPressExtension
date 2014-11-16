@@ -109,7 +109,11 @@ class WordPressContextInitializer implements ContextInitializer
             $fs->dumpFile($file->getPath() . '/wp-config.php', $configContent);
         }
 
-        if ($this->wordpressParams['symlink']) {
+        if (
+            isset($this->wordpressParams['symlink']['from']) &&
+            isset($this->wordpressParams['symlink']['to']) &&
+            $fs->exists($this->wordpressParams['symlink']['from'])
+        ) {
             $fs->symlink(
                 $this->basePath . DIRECTORY_SEPARATOR . $this->wordpressParams['symlink']['from'],
                 $this->wordpressParams['symlink']['to']

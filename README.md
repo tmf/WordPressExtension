@@ -17,6 +17,7 @@ Installation
         }
     }
     ```
+    
 2. Add the following Behat configuration file:
     ```yml
     default:
@@ -35,6 +36,7 @@ Installation
               goutte: ~
     
     ```
+    
 3. Install the vendors and initialize behat test suites
     ```bash
     composer update
@@ -44,6 +46,7 @@ Installation
     ```bash
     php -S localhost:8000 -t vendor/wordpress -d disable_functions=mail
     ```
+    
 5. Write some Behat features and test them
     ```
     Feature: Manage plugins
@@ -72,7 +75,9 @@ Installation
             Then I should not see a "#dolly" element
     
     ```
+    
 6. Run the tests
     ```bash
     vendor/bin/behat
     ```
+    

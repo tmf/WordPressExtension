@@ -61,6 +61,25 @@ class WordPressContextInitializer implements ContextInitializer
         $_SERVER['HTTP_HOST'] = $urlComponents['host'] . (isset($urlComponents['port']) ? ':' . $urlComponents['port'] : '');
         $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
 
+        if (!defined('ABSPATH')) {
+          define('ABSPATH', $this->wordpressParams['path']);
+        }
+
+        if (!defined('DB_HOST')) {
+          define('DB_HOST', $this->wordpressParams['connection']['dbhost']);
+        }
+
+        if (!defined('DB_NAME')) {
+          define('DB_NAME', $this->wordpressParams['connection']['db']);
+        }
+
+        if (!defined('DB_USER')) {
+          define('DB_USER', $this->wordpressParams['connection']['username']);
+        }
+
+        if (!defined('DB_PASSWORD')) {
+          define('DB_PASSWORD', $this->wordpressParams['connection']['password']);
+        }
 
         // we don't have a request uri in headless scenarios:
         // wordpress will try to "fix" php_self variable based on the request uri, if not present

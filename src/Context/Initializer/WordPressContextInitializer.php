@@ -2,18 +2,14 @@
 
 namespace Tmf\WordPressExtension\Context\Initializer;
 
-use Behat\Behat\Context\Context,
-    Behat\Behat\Context\Initializer\ContextInitializer;
-
-use Symfony\Component\Finder\Finder,
-    Symfony\Component\Filesystem\Filesystem;
-
+use Behat\Behat\Context\Context;
+use Behat\Behat\Context\Initializer\ContextInitializer;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Filesystem\Filesystem;
 use Tmf\WordPressExtension\Context\WordPressContext;
 
 /**
- * Class FeatureListener
- *
- * @package Tmf\WordPressExtension\Listener
+ * Class FeatureListener.
  */
 class WordPressContextInitializer implements ContextInitializer
 {
@@ -22,7 +18,7 @@ class WordPressContextInitializer implements ContextInitializer
     private $basePath;
 
     /**
-     * inject the wordpress extension parameters and the mink parameters
+     * inject the wordpress extension parameters and the mink parameters.
      *
      * @param array  $wordpressParams
      * @param array  $minkParams
@@ -36,7 +32,7 @@ class WordPressContextInitializer implements ContextInitializer
     }
 
     /**
-     * setup the wordpress environment / stack if the context is a wordpress context
+     * setup the wordpress environment / stack if the context is a wordpress context.
      *
      * @param Context $context
      */
@@ -52,42 +48,43 @@ class WordPressContextInitializer implements ContextInitializer
     }
 
     /**
-     * prepare environment variables
+     * prepare environment variables.
      */
     private function prepareEnvironment()
     {
         // wordpress uses these superglobal fields everywhere...
         $urlComponents = parse_url($this->minkParams['base_url']);
-        $_SERVER['HTTP_HOST'] = $urlComponents['host'] . (isset($urlComponents['port']) ? ':' . $urlComponents['port'] : '');
+        $_SERVER['HTTP_HOST'] = $urlComponents['host'].(isset($urlComponents['port']) ? ':'.$urlComponents['port'] : '');
         $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
 
-        if (!defined('ABSPATH')) {
-          define('ABSPATH', $this->wordpressParams['path']);
-        }
+        if ($this->wordpressParams['prepare_constants']) {
+            if (!defined('ABSPATH')) {
+                define('ABSPATH', $this->wordpressParams['path']);
+            }
 
-        if (!defined('DB_HOST')) {
-          define('DB_HOST', $this->wordpressParams['connection']['dbhost']);
-        }
+            if (!defined('DB_HOST')) {
+                define('DB_HOST', $this->wordpressParams['connection']['dbhost']);
+            }
 
-        if (!defined('DB_NAME')) {
-          define('DB_NAME', $this->wordpressParams['connection']['db']);
-        }
+            if (!defined('DB_NAME')) {
+                define('DB_NAME', $this->wordpressParams['connection']['db']);
+            }
 
-        if (!defined('DB_USER')) {
-          define('DB_USER', $this->wordpressParams['connection']['username']);
-        }
+            if (!defined('DB_USER')) {
+                define('DB_USER', $this->wordpressParams['connection']['username']);
+            }
 
-        if (!defined('DB_PASSWORD')) {
-          define('DB_PASSWORD', $this->wordpressParams['connection']['password']);
+            if (!defined('DB_PASSWORD')) {
+                define('DB_PASSWORD', $this->wordpressParams['connection']['password']);
+            }
         }
-
         // we don't have a request uri in headless scenarios:
         // wordpress will try to "fix" php_self variable based on the request uri, if not present
         $PHP_SELF = $GLOBALS['PHP_SELF'] = $_SERVER['PHP_SELF'] = '/index.php';
     }
 
     /**
-     * actually load the wordpress stack
+     * actually load the wordpress stack.
      */
     private function loadStack()
     {
@@ -107,7 +104,7 @@ class WordPressContextInitializer implements ContextInitializer
     }
 
     /**
-     * create a wp-config.php and link plugins / themes
+     * create a wp-config.php and link plugins / themes.
      */
     public function installFileFixtures()
     {
@@ -120,21 +117,21 @@ class WordPressContextInitializer implements ContextInitializer
                     "'DB_NAME', 'database_name_here'",
                     "'DB_USER', 'username_here'",
                     "'DB_PASSWORD', 'password_here'",
-                    "'DB_HOST', 'localhost'"
+                    "'DB_HOST', 'localhost'",
                 ), array(
                     sprintf("'DB_NAME', '%s'", $this->wordpressParams['connection']['db']),
                     sprintf("'DB_USER', '%s'", $this->wordpressParams['connection']['username']),
                     sprintf("'DB_PASSWORD', '%s'", $this->wordpressParams['connection']['password']),
                     sprintf("'DB_HOST', '%s'", $this->wordpressParams['connection']['dbhost']),
                 ), $file->getContents());
-            $fs->dumpFile($file->getPath() . '/wp-config.php', $configContent);
+            $fs->dumpFile($file->getPath().'/wp-config.php', $configContent);
         }
 
         if (isset($this->wordpressParams['symlink']['from']) && isset($this->wordpressParams['symlink']['to'])) {
             $from = $this->wordpressParams['symlink']['from'];
 
             if (substr($from, 0, 1) != '/') {
-                $from = $this->basePath . DIRECTORY_SEPARATOR . $from;
+                $from = $this->basePath.DIRECTORY_SEPARATOR.$from;
             }
             if ($fs->exists($this->wordpressParams['symlink']['from'])) {
                 $fs->symlink($from, $this->wordpressParams['symlink']['to']);
@@ -143,7 +140,7 @@ class WordPressContextInitializer implements ContextInitializer
     }
 
     /**
-     * flush the database if specified by flush_database parameter
+     * flush the database if specified by flush_database parameter.
      */
     public function flushDatabase()
     {

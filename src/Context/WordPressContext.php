@@ -16,7 +16,7 @@ class WordPressContext extends MinkContext
     /**
      * Create a new WordPress website from scratch
      *
-     * @Given /^\w+ have|has a vanilla wordpress installation$/
+     * @Given /^I have a vanilla wordpress installation$/
      */
     public function installWordPress(TableNode $table = null)
     {
@@ -86,7 +86,11 @@ class WordPressContext extends MinkContext
     {
         foreach ($table->getHash() as $row) {
             if ($row["status"] == "enabled") {
-                activate_plugin(WP_PLUGIN_DIR . "/" . $row["plugin"]);
+                //$result = activate_plugin(WP_PLUGIN_DIR . "/" . $row["plugin"]);
+                $result = activate_plugin($row["plugin"]);
+                if ( is_wp_error( $result ) ) {
+	            throw new \Exception($row["plugin"] . ': ' . $result->get_error_message());
+                }
             } else {
                 deactivate_plugins(WP_PLUGIN_DIR . "/" . $row["plugin"]);
             }
@@ -109,6 +113,21 @@ class WordPressContext extends MinkContext
         $currentPage->findButton('wp-submit')->click();
 
         assertTrue($this->getSession()->getPage()->hasContent('Dashboard'));
+    }
+    /**
+     * @Given /^I enable permalinks$/
+     */
+    public function iEnablePermalinks()
+    {
+        $this->visit(get_site_url()."/wp-admin/options-permalink.php");
+    }
+
+    /**
+     * @Given /^I am logged out$/
+     */
+    public function iAmLoggedOut()
+    {
+        $this->visit(wp_logout_url());
     }
 
 }

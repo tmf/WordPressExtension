@@ -87,12 +87,13 @@ class WordPressContext extends MinkContext
         foreach ($table->getHash() as $row) {
             if ($row["status"] == "enabled") {
                 //$result = activate_plugin(WP_PLUGIN_DIR . "/" . $row["plugin"]);
+                deactivate_plugins($row["plugin"]);
                 $result = activate_plugin($row["plugin"]);
                 if ( is_wp_error( $result ) ) {
 	            throw new \Exception($row["plugin"] . ': ' . $result->get_error_message());
                 }
             } else {
-                deactivate_plugins(WP_PLUGIN_DIR . "/" . $row["plugin"]);
+                deactivate_plugins($row["plugin"]);
             }
         }
     }
@@ -110,9 +111,10 @@ class WordPressContext extends MinkContext
 
         $currentPage->fillField('user_login', $username);
         $currentPage->fillField('user_pass', $password);
-        $currentPage->findButton('wp-submit')->click();
-
-        assertTrue($this->getSession()->getPage()->hasContent('Dashboard'));
+        $currentPage->findButton('wp-submit')->click(); 
+        assertTrue($this->getSession()->getPage()->hasContent($username));
+        //normal users haven't a dashboard after log in
+        //assertTrue($this->getSession()->getPage()->hasContent('Dashboard'));
     }
     /**
      * @Given /^I enable permalinks$/

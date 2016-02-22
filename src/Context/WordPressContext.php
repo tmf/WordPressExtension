@@ -112,7 +112,6 @@ class WordPressContext extends MinkContext
         $currentPage->fillField('user_login', $username);
         $currentPage->fillField('user_pass', $password);
         $currentPage->findButton('wp-submit')->click(); 
-        assertTrue($this->getSession()->getPage()->hasContent($username));
         //normal users haven't a dashboard after log in
         //assertTrue($this->getSession()->getPage()->hasContent('Dashboard'));
     }

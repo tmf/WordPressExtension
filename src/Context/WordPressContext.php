@@ -98,7 +98,6 @@ class WordPressContext extends MinkContext
         }
     }
 
-
     /**
      * Login into the reserved area of this wordpress
      *
@@ -108,13 +107,22 @@ class WordPressContext extends MinkContext
     {
         $this->visit(get_site_url()."/wp-login.php");
         $currentPage = $this->getSession()->getPage();
-
-        $currentPage->fillField('user_login', $username);
-        $currentPage->fillField('user_pass', $password);
-        $currentPage->findButton('wp-submit')->click(); 
-        //normal users haven't a dashboard after log in
-        //assertTrue($this->getSession()->getPage()->hasContent('Dashboard'));
+        $i = 0;
+        while($i < 3){
+            $currentPage->fillField('Username', $username);
+            $currentPage->fillField('Password', $password);
+            $currentPage->fillField('user_login', $username);
+            $currentPage->fillField('user_pass', $password);
+            $currentPage->findButton('wp-submit')->click();
+            $p = $this->getSession()->getPage();
+            if(!$p->hasContent('ERROR'))
+                return;
+            echo $err."\r\n";
+            $i++;
+        }
+        throw new \Exception($err);
     }
+    
     /**
      * @Given /^I enable permalinks$/
      */

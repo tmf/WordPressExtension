@@ -98,6 +98,7 @@ class WordPressContext extends MinkContext
         }
     }
 
+
     /**
      * Login into the reserved area of this wordpress
      *
@@ -122,7 +123,7 @@ class WordPressContext extends MinkContext
         }
         throw new \Exception($err);
     }
-    
+
     /**
      * @Given /^I enable permalinks$/
      */
@@ -137,6 +138,7 @@ class WordPressContext extends MinkContext
     public function iAmLoggedOut()
     {
         $this->visit(wp_logout_url());
+        $this->getSession()->getPage()->clickLink('log out');
     }
 
 }

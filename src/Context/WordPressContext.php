@@ -106,6 +106,7 @@ class WordPressContext extends MinkContext
      */
     public function login($username, $password)
     {
+    	$this->getSession()->reset();
         $this->visit(get_site_url()."/wp-login.php");
         $currentPage = $this->getSession()->getPage();
         $i = 0;

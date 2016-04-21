@@ -16,7 +16,7 @@ class WordPressContext extends MinkContext
     /**
      * Create a new WordPress website from scratch
      *
-     * @Given /^\w+ have|has a vanilla wordpress installation$/
+     * @Given /^I have a vanilla wordpress installation$/
      */
     public function installWordPress(TableNode $table = null)
     {
@@ -86,9 +86,14 @@ class WordPressContext extends MinkContext
     {
         foreach ($table->getHash() as $row) {
             if ($row["status"] == "enabled") {
-                activate_plugin(WP_PLUGIN_DIR . "/" . $row["plugin"]);
+                //$result = activate_plugin(WP_PLUGIN_DIR . "/" . $row["plugin"]);
+                deactivate_plugins($row["plugin"]);
+                $result = activate_plugin($row["plugin"]);
+                if ( is_wp_error( $result ) ) {
+	            throw new \Exception($row["plugin"] . ': ' . $result->get_error_message());
+                }
             } else {
-                deactivate_plugins(WP_PLUGIN_DIR . "/" . $row["plugin"]);
+                deactivate_plugins($row["plugin"]);
             }
         }
     }
@@ -101,14 +106,43 @@ class WordPressContext extends MinkContext
      */
     public function login($username, $password)
     {
+    	$this->getSession()->reset();
         $this->visit(get_site_url()."/wp-login.php");
         $currentPage = $this->getSession()->getPage();
+        $i = 0;
+        while($i < 3){
+            $currentPage->fillField('Username', $username);
+            $currentPage->fillField('Password', $password);
+            $currentPage->fillField('user_login', $username);
+            $currentPage->fillField('user_pass', $password);
+            $currentPage->findButton('wp-submit')->click();
+            $p = $this->getSession()->getPage();
+            if(!$p->hasContent('ERROR'))
+                return;
+            echo $err."\r\n";
+            $i++;
+        }
+        throw new \Exception($err);
+    }
 
-        $currentPage->fillField('user_login', $username);
-        $currentPage->fillField('user_pass', $password);
-        $currentPage->findButton('wp-submit')->click();
+    /**
+     * @Given /^I enable permalinks$/
+     */
+    public function iEnablePermalinks()
+    {
+        $this->visit(get_site_url()."/wp-admin/options-permalink.php");
+        $currentPage = $this->getSession()->getPage();
+        $currentPage->fillField('selection', '/%postname%/');
+        $currentPage->pressButton('Save Changes');
+    }
 
-        assertTrue($this->getSession()->getPage()->hasContent('Dashboard'));
+    /**
+     * @Given /^I am logged out$/
+     */
+    public function iAmLoggedOut()
+    {
+        $this->visit(wp_logout_url());
+        $this->getSession()->getPage()->clickLink('log out');
     }
 
 }

@@ -131,6 +131,9 @@ class WordPressContext extends MinkContext
     public function iEnablePermalinks()
     {
         $this->visit(get_site_url()."/wp-admin/options-permalink.php");
+        $currentPage = $this->getSession()->getPage();
+        $currentPage->fillField('selection', '/%postname%/');
+        $currentPage->pressButton('Save Changes');
     }
 
     /**
